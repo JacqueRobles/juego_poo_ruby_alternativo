@@ -1,0 +1,78 @@
+# Clase padre GameObject
+class GameObject
+  attr_reader :name
+  attr_accessor :hp
+
+  def initialize(name)
+    @name = name
+    @hp = 100
+  end
+
+  def take_damage(damage)
+    @hp -= damage
+    puts "#{@name} ha recibido #{damage} puntos de daño. HP restante: #{@hp}."
+  end
+end
+
+# Clase hija Player
+class Player < GameObject
+  attr_accessor :strength, :defense
+
+  def initialize(name)
+    super(name)
+    @strength = 10
+    @defense = 5
+  end
+
+  def attack(enemy)
+    damage = rand(@strength)
+    enemy.take_damage(damage)
+    puts "#{@name} ha causado #{damage} puntos de daño a #{enemy.name}."
+  end
+
+  def defend
+    @defense += 2
+    puts "#{@name} se ha protegido y su defensa se ha incrementado a #{@defense}."
+  end
+end
+
+# Clase hija Monster
+class Monster < GameObject
+  attr_accessor :strength
+
+  def initialize(name)
+    super(name)
+    @strength = 5
+  end
+
+  def attack(player)
+    damage = rand(@strength)
+    player.take_damage(damage)
+    puts "#{@name} ha causado #{damage} puntos de daño a #{player.name}."
+  end
+end
+
+player = Player.new("Jugador 1")
+monster = Monster.new("Monstruo 1")
+
+while player.hp > 0 && monster.hp > 0
+  puts "Elige una acción: (1) Atacar (2) Defender"
+  action = gets.chomp.to_i
+  if action == 1
+    player.attack(monster)
+  elsif action == 2
+    player.defend
+  else
+    puts "Acción inválida"
+  end
+
+  if monster.hp > 0
+    monster.attack(player)
+  end
+end
+
+if player.hp <= 0
+  puts "Has sido derrotado"
+else
+  puts "¡Has vencido al monstruo!"
+end
